@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démo - Bourses d'Études Inde 2026</title>
+    <style>
+        :root {
+            --primary-color: #ff9933; /* Safran - Drapeau Inde */
+            --secondary-color: #138808; /* Vert - Drapeau Inde */
+            --dark-blue: #000080; /* Bleu Navy */
+            --light-bg: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--primary-color);
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: var(--dark-blue);
+            margin-top: 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* Formulaire */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 100%;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--dark-blue);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0e6606;
+        }
+
+        /* Carte de Candidat */
+        .hidden {
+            display: none;
+        }
+
+        .exam-card {
+            border: 2px dashed var(--dark-blue);
+            padding: 20px;
+            border-radius: 10px;
+            background: #fff;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .card-body {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .info-item strong {
+            color: #555;
+        }
+
+        .photo-placeholder {
+            width: 110px;
+            height: 130px;
+            border: 2px dashed #999;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            font-size: 0.8em;
+            color: #777;
+            background: #fafafa;
+            border-radius: 4px;
+        }
+
+        .card-footer {
+            margin-top: 20px;
+            background: #f0f4f8;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            border-left: 4px solid var(--dark-blue);
+        }
+
+        .btn-print {
+            background-color: var(--dark-blue);
+            margin-top: 20px;
+        }
+
+        /* Style pour l'impression */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #examCardSection, #examCardSection * {
+                visibility: visible;
+            }
+            #examCardSection {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- SECTION 1: LE FORMULAIRE -->
+    <div id="formSection">
+        <h2>Fiche d'Enregistrement</h2>
+        <p class="subtitle">Concours d'accès aux bourses d'études en Inde (Partielles & Complètes)</p>
+        
+        <form id="registrationForm" onsubmit="generateCard(event)">
+            <div class="row">
+                <div class="form-group">
+                    <label for="lastName">Nom *</label>
+                    <input type="text" id="lastName" required placeholder="Ex: Dupont">
+                </div>
+                <div class="form-group">
+                    <label for="firstName">Prénom *</label>
+                    <input type="text" id="firstName" required placeholder="Ex: Jean">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="email">Adresse Email *</label>
+                    <input type="email" id="email" required placeholder="exemple@mail.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Téléphone *</label>
+                    <input type="tel" id="phone" required placeholder="Ex: +237 6xx xxx xxx">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="currentLevel">Niveau d'études actuel *</label>
+                    <select id="currentLevel" required>
+                        <option value="">Sélectionnez...</option>
+                        <option value="Baccalauréat">Baccalauréat</option>
+                        <option value="Licence / Bachelor">Licence / Bachelor</option>
+                        <option value="Master">Master</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="grade">Dernière Moyenne / Mention *</label>
+                    <input type="text" id="grade" required placeholder="Ex: 14.5/20 ou B+">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="targetField">Filière visée en Inde *</label>
+                    <select id="targetField" required>
+                        <option value="">Sélectionnez...</option>
+                        <option value="Ingénierie & Technologie">Ingénierie & Technologie</option>
+                        <option value="Informatique & IA">Informatique & Intelligence Artificielle</option>
+                        <option value="Management & Business">Management & Business (MBA)</option>
+                        <option value="Sciences Médicales">Sciences Médicales / Pharmacie</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="scholarshipType">Type de bourse souhaité *</label>
+                    <select id="scholarshipType" required>
+                        <option value="">Sélectionnez...</option>
+                        <option value="Bourse Complète (100%)">Bourse Complète (100%)</option>
+                        <option value="Bourse Partielle (50%)">Bourse Partielle (50%)</option>
+                        <option value="Peu importe">Peu importe (Selon éligibilité)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Valider l'inscription & Générer ma carte</button>
+        </form>
+    </div>
+
+    <!-- SECTION 2: LA CARTE D'EXAMEN -->
+    <div id="examCardSection" class="hidden">
+        <h2>Félicitations ! Votre inscription est validée.</h2>
+        <p class="subtitle">Veuillez imprimer ou sauvegarder votre carte de candidat ci-dessous.</p>
+        
+        <div class="exam-card">
+            <div class="card-header">
+                <div>
+                    <h3>CARTE DE CANDIDAT – EXAMEN BOURSE INDE</h3>
+                    <small style="color: var(--secondary-color); font-weight: bold;">Session Officielle 2026</small>
+                </div>
+                <div style="text-align: right;">
+                    <span id="cardID" style="background: var(--dark-blue); color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.9em;"></span>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div>
+                    <div class="info-item"><strong>Nom complet :</strong> <span id="lblFullname"></span></div>
+                    <div class="info-item"><strong>Email :</strong> <span id="lblEmail"></span></div>
+                    <div class="info-item"><strong>Téléphone :</strong> <span id="lblPhone"></span></div>
+                    <div class="info-item"><strong>Niveau d'études :</strong> <span id="lblLevel"></span> (Moyenne: <span id="lblGrade"></span>)</div>
+                    <div class="info-item"><strong>Filière demandée :</strong> <span id="lblField"></span></div>
+                    <div class="info-item"><strong>Option de Bourse :</strong> <span id="lblScholarship"></span></div>
+                </div>
+                <div>
+                    <div class="photo-placeholder">
+                        Coller<br>Photo d'identité ici
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <strong>Instructions importantes :</strong>
+                <ul>
+                    <li>Présentez-vous 30 minutes avant le début des épreuves muni de cette carte imprimée.</li>
+                    <li>Apportez obligatoirement une pièce d'identité valide (CNI ou Passeport).</li>
+                    <li>Tout dictionnaire ou matériel connecté non autorisé est strictement interdit.</li>
+                </ul>
+            </div>
+        </div>
+
+        <button class="btn-print" onclick="window.print()">Imprimer la carte de candidat</button>
+        <button style="background: #777; margin-top: 10px;" onclick="resetForm()">Inscrire un autre candidat</button>
+    </div>
+
+</div>
+
+<script>
+    // Fonction principale pour basculer du formulaire à la carte
+    function generateCard(event) {
+        event.preventDefault(); // Empêche la page de se recharger
+
+        // 1. Génération d'un ID Unique (Ex: IND-2026-Xxx)
+        const randomNumber = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('cardID').innerText = "IND-2026-" + randomNumber;
+
+        // 2. Récupération des données du formulaire
+        const lastName = document.getElementById('lastName').value.toUpperCase();
+        const firstName = document.getElementById('firstName').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const currentLevel = document.getElementById('currentLevel').value;
+        const grade = document.getElementById('grade').value;
+        const targetField = document.getElementById('targetField').value;
+        const scholarshipType = document.getElementById('scholarshipType').value;
+
+        // 3. Remplissage de la carte
+        document.getElementById('lblFullname').innerText = lastName + " " + firstName;
+        document.getElementById('lblEmail').innerText = email;
+        document.getElementById('lblPhone').innerText = phone;
+        document.getElementById('lblLevel').innerText = currentLevel;
+        document.getElementById('lblGrade').innerText = grade;
+        document.getElementById('lblField').innerText = targetField;
+        document.getElementById('lblScholarship').innerText = scholarshipType;
+
+        // 4. Masquer le formulaire et afficher la carte
+        document.getElementById('formSection').classList.add('hidden');
+        document.getElementById('examCardSection').classList.remove('hidden');
+    }
+
+    // Fonction pour réinitialiser et revenir au formulaire
+    function resetForm() {
+        document.getElementById('registrationForm').reset();
+        document.getElementById('examCardSection').classList.add('hidden');
+        document.getElementById('formSection').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
